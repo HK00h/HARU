@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-HARU is a pre-launch Web3 project being developed on BNB Smart Chain. The project aims to build an accessible Web3 ecosystem combining a BEP-20 compatible token with wallet connectivity, blockchain interaction, and a Web3 dashboard.
+HARU is a Web3 project deployed on BNB Smart Chain Mainnet. The project aims to build an accessible Web3 ecosystem combining a BEP-20 compatible token with wallet connectivity, blockchain interaction, and a Web3 dashboard.
 
 ## 2. Problem
 
@@ -29,9 +29,13 @@ HARU plans to develop:
 - Token Standard: BEP-20 compatible
 - Total Supply: 100,000,000 HARU
 - Decimals: 18
-- Status: Pre-launch
+- Status: Deployed on BNB Smart Chain Mainnet
 
 ## 5. Smart Contract
+
+**Contract Address:** `0x43054bb04e5bBd5153486396989e3C45424392C0`
+
+**Deployment Network:** BNB Smart Chain Mainnet
 
 The HARU smart contract has been developed and compiled using Solidity and OpenZeppelin's ERC-20 implementation.
 
