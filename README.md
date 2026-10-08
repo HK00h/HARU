@@ -1,6 +1,6 @@
 # HARU
 
-HARU is a pre-launch Web3 project being developed on BNB Smart Chain.
+HARU is a Web3 project deployed on BNB Smart Chain Mainnet.
 
 ## Token
 
