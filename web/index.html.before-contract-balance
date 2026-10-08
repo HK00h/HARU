@@ -1,0 +1,212 @@
+
+	
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>HARU Web3</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0f19;
+      color: white;
+    }
+
+    header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #202637;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .status {
+      color: #9ca3af;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 25px 18px;
+    }
+
+    .hero {
+      padding: 25px 0;
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #aeb6c7;
+    }
+
+    .card {
+      background: #121827;
+      border: 1px solid #242c3d;
+      border-radius: 16px;
+      padding: 22px;
+      margin-top: 18px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+    }
+
+    .balance {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 12px 0;
+    }
+
+    .network {
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .prelaunch {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 7px 12px;
+      border-radius: 20px;
+      background: #263044;
+      color: #dbe4ff;
+      font-size: 13px;
+    }
+
+    #wallet {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <div class="logo">HARU</div>
+    <div class="status">Web3 Dashboard</div>
+  </div>
+
+  <appkit-button></appkit-button>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>HARU Web3</h1>
+    <p>
+      A pre-launch Web3 project being developed on BNB Smart Chain.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>HARU Token</h2>
+
+    <div class="balance">
+      100,000,000 HARU
+    </div>
+
+    <div class="network">
+      Total Supply
+    </div>
+
+    <div class="network" style="margin-top:10px;">
+      Wallet Balance: Contract not deployed yet
+    </div>
+
+    <div class="network">
+      Network: BNB Smart Chain
+    </div>
+
+    <div class="network">
+      Standard: BEP-20 compatible
+    </div>
+
+    <div class="network">
+      Decimals: 18
+    </div>
+
+    <span class="prelaunch">
+      PRE-LAUNCH
+    </span>
+  </section>
+
+  <section class="card">
+    <h2>Wallet</h2>
+
+    <p>
+      Connect your Web3 wallet to interact with the HARU dashboard.
+    </p>
+
+    <div id="wallet">
+      Wallet status will appear here after connection.
+    </div>
+  </section>
+
+</main>
+
+<script type="module">
+
+  import { createAppKit } from '@reown/appkit';
+  import { EthersAdapter } from '@reown/appkit-adapter-ethers';
+  import { bsc } from '@reown/appkit/networks';
+  // IMPORTANT:
+  // Replace this with your NEW Reown Project ID.
+  const projectId ='5074684dec4056a6936f0e6c8f8a3bbd';
+
+  const ethersAdapter = new EthersAdapter();
+
+  const appKit = createAppKit({
+    adapters: [ethersAdapter],
+    networks: [bsc],
+    projectId: projectId,
+    metadata: {
+      name: 'HARU Web3',
+      description: 'HARU Web3 Dashboard',
+      url: window.location.origin,
+      icons: []
+    }
+  });
+
+  const walletStatus = document.getElementById('wallet');
+
+  function updateWalletAddress() {
+    const address = appKit.getAddress();
+
+    if (address) {
+      walletStatus.textContent = 'Connected: ' + address;
+    } else {
+      walletStatus.textContent = 'Wallet not connected.';
+    }
+  }
+
+  updateWalletAddress();
+
+  appKit.subscribeAccount(() => {
+    updateWalletAddress();
+  });
+
+  console.log('HARU Web3 initialized');
+
+</script>
+
+</body>
+</html>
