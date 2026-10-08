@@ -10,7 +10,7 @@ HARU is a pre-launch Web3 project being developed on BNB Smart Chain.
 - Standard: BEP-20 compatible
 - Total Supply: 100,000,000 HARU
 - Decimals: 18
-- Status: Pre-launch
+- Status: Deployed on BNB Smart Chain Mainnet
 
 ## Project
 
@@ -27,7 +27,7 @@ HARU aims to develop an accessible Web3 ecosystem with:
 
 The HARU smart contract has been developed and compiled.
 
-BNB Smart Chain Mainnet deployment is planned once the required deployment gas is available.
+BNB Smart Chain Mainnet deployment is complete.
 
 ## Transparency
 
