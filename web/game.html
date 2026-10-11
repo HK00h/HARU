@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101528">
+  <title>HARU Gaming</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: #101528; color: #fff;
+    }
+    header {
+      padding: 20px; background: #191f38;
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .logo { color: #63f5c5; font-size: 25px; font-weight: 800; }
+    button {
+      background: #63f5c5; color: #101528;
+      border: 0; border-radius: 10px;
+      padding: 12px 16px; font-weight: bold; cursor: pointer;
+    }
+    main { max-width: 900px; margin: auto; padding: 22px; }
+    .hero {
+      padding: 28px 20px; border-radius: 20px;
+      background: linear-gradient(135deg, #263c64, #44266b);
+      margin-bottom: 22px;
+    }
+    h1 { font-size: 32px; margin: 0 0 12px; }
+    p { color: #c5cbe0; line-height: 1.6; }
+    .balances, .games {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px; margin: 20px 0;
+    }
+    .card {
+      background: #1b223b; padding: 20px;
+      border: 1px solid #303a59; border-radius: 16px;
+    }
+    .amount { font-size: 23px; font-weight: bold; margin-top: 10px; }
+    .game-icon { font-size: 36px; }
+    .muted { font-size: 13px; color: #aeb8d3; }
+    .notice {
+      border: 1px solid #596080; padding: 15px;
+      border-radius: 12px; margin-top: 20px;
+    }
+    footer { text-align: center; padding: 25px; color: #aeb8d3; }
+    @media (max-width: 480px) {
+      .balances, .games { grid-template-columns: 1fr; }
+      h1 { font-size: 27px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">HARU GAMING</div>
+    <button id="connect">Connect Wallet</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Play. Compete. Win.</h1>
+      <p>Welcome to the HARU gaming hub on BNB Smart Chain.</p>
+      <button id="explore">Explore Games</button>
+    </section>
+
+    <h2>Your Wallet</h2>
+    <section class="balances">
+      <div class="card">
+        <div>HARU Balance</div>
+        <div class="amount" id="haru">— HARU</div>
+        <p class="muted">Connect your wallet to check your on-chain balance.</p>
+      </div>
+      <div class="card">
+        <div>USDT Rewards</div>
+        <div class="amount">Not available yet</div>
+        <p class="muted">Rewards will require funded payouts and verification.</p>
+      </div>
+    </section>
+
+    <section class="card" id="player-profile">
+      <h2>Player Profile</h2>
+      <p>Wallet address:</p>
+      <p id="profile-address" style="overflow-wrap:anywhere;">Not connected</p>
+      <p>Games played: <strong id="profile-played">0</strong></p>
+      <p>Wins: <strong id="profile-wins">0</strong></p>
+      <p>Losses: <strong id="profile-losses">0</strong></p>
+      <p>Demo win rate: <strong id="profile-rate">0%</strong></p>
+      <p>Local-only demo profile — saved in this browser on this device. Not server-verified. No real prizes or token transfers.</p>
+    </section>
+
+    <section class="card" id="entry-settings">
+      <h2>Game Entry Amount</h2>
+      <p>Choose how much HARU you want to enter with.</p>
+      <label for="entry-amount">HARU amount (100–10,000)</label>
+      <input id="entry-amount" type="number" min="100" max="10000"
+        step="1" value="100" inputmode="numeric"
+        style="display:block;width:100%;padding:12px;margin:10px 0;box-sizing:border-box;">
+      <p id="entry-message" role="status">Demo selection only — no tokens are transferred.</p>
+    </section>
+
+    <h2>Game Lobby</h2>
+    <section class="games" id="games">
+      <div class="card">
+        <div class="game-icon">🧠</div>
+        <h3>Memory Challenge</h3>
+        <p>Remember the number sequence and test your concentration.</p>
+        <p><strong>Entry:</strong> Uses your selected demo amount.</p>
+        <p><strong>Mode:</strong> Practice only; no real tokens are wagered.</p>
+        <button data-game="memory">Play Memory Demo</button>
+      </div>
+      <div class="card">
+        <div class="game-icon">🎯</div>
+        <h3>Target Challenge</h3>
+        <p>Test your timing and aim in a quick target challenge.</p>
+        <p><strong>Entry:</strong> Uses your selected demo amount.</p>
+        <p><strong>Mode:</strong> Practice only; no real tokens are wagered.</p>
+        <button data-game="target">Play Target Demo</button>
+      </div>
+    </section>
+
+    <section class="card" id="game-area" hidden>
+      <h2 id="game-title">Game</h2>
+      <p id="game-message"></p>
+      <div id="demo-reward" class="notice" hidden
+           style="margin:12px 0;padding:12px;">
+        <strong>Demo Rewards</strong>
+        <p id="demo-reward-text"></p>
+        <p>Illustration only. No real prize is earned or paid.</p>
+      </div>
+      <div id="target-controls" hidden style="margin:12px 0;">
+        <label for="target-answer">Pick a number from 1 to 5</label>
+        <input id="target-answer" type="number" min="1" max="5"
+          inputmode="numeric" placeholder="Enter 1–5"
+          style="display:block;width:100%;padding:12px;margin:10px 0;box-sizing:border-box;">
+      </div>
+      <button id="game-action">Start</button>
+      <button id="close-game">Close</button>
+    </section>
+
+    <section class="card" id="game-stats">
+      <h2>Game Results &amp; Statistics</h2>
+      <p>Demo statistics only — no real tokens or prizes.</p>
+      <p>Games played: <strong id="stat-played">0</strong></p>
+      <p>Wins: <strong id="stat-wins">0</strong></p>
+      <p>Losses: <strong id="stat-losses">0</strong></p>
+      <p>Total demo entries: <strong id="stat-entries">0 HARU</strong></p>
+      <p>Hypothetical prizes: <strong id="stat-prizes">0 HARU</strong></p>
+      <p>Demo win rate: <strong id="stat-rate">0%</strong></p>
+    </section>
+
+    <section class="notice">
+      <strong>Demo mode</strong>
+      <p>Games currently use no deposits, wagers, or real-money payouts.
+      Never send tokens to an unverified address. USDT rewards are not
+      active until a secure payout system is implemented.</p>
+    </section>
+  </main>
+
+  <footer>HARU Gaming · BNB Smart Chain · Demo version</footer>
+
+  <script type="module">
+    import { BrowserProvider, Contract, formatUnits } from 'ethers';
+    import { HARU_CONFIG } from './haru-config.js';
+
+    const connectButton = document.getElementById('connect');
+    const balanceDisplay = document.getElementById('haru');
+    const profileAddress = document.getElementById('profile-address');
+
+    const tokenAbi = [
+      'function balanceOf(address) view returns (uint256)',
+      'function decimals() view returns (uint8)',
+      'function symbol() view returns (string)'
+    ];
+
+    let walletConnected = false;
+
+    connectButton.addEventListener('click', async () => {
+      if (walletConnected) {
+        walletConnected = false;
+        balanceDisplay.textContent = '— HARU';
+        loadStatsForAddress(null);
+        connectButton.textContent = 'Connect Wallet';
+        return;
+      }
+
+      if (!window.ethereum) {
+        alert('Open this page in your wallet browser to connect.');
+        return;
+      }
+
+      try {
+        const provider = new BrowserProvider(window.ethereum);
+
+        try {
+          await window.ethereum.request({
+            method: 'wallet_requestPermissions',
+            params: [{ eth_accounts: {} }]
+          });
+        } catch (permissionError) {
+          // Fall back if this wallet does not support permission requests.
+        }
+
+        await provider.send('eth_requestAccounts', []);
+        const network = await provider.getNetwork();
+
+        if (Number(network.chainId) !== HARU_CONFIG.chainId) {
+          balanceDisplay.textContent = 'Switch to BNB Chain';
+          return;
+        }
+
+        const signer = await provider.getSigner();
+        const address = await signer.getAddress();
+        loadStatsForAddress(address);
+        const token = new Contract(
+          HARU_CONFIG.contractAddress, tokenAbi, provider
+        );
+
+        const [balance, decimals, symbol] = await Promise.all([
+          token.balanceOf(address),
+          token.decimals(),
+          token.symbol()
+        ]);
+
+        balanceDisplay.textContent =
+          Number(formatUnits(balance, decimals)).toLocaleString(
+            undefined, { maximumFractionDigits: 4 }
+          ) + ' ' + symbol;
+
+        connectButton.textContent =
+          'Disconnect (' + address.slice(0, 6) + '...)';
+        walletConnected = true;
+      } catch (error) {
+        console.error(error);
+        alert('Wallet connection or balance check failed. Please try again.');
+      }
+    });
+
+    if (window.ethereum && window.ethereum.on) {
+      window.ethereum.on('accountsChanged', async (accounts) => {
+        walletConnected = false;
+        balanceDisplay.textContent = '— HARU';
+
+        if (!accounts || accounts.length === 0) {
+          loadStatsForAddress(null);
+          connectButton.textContent = 'Connect Wallet';
+          return;
+        }
+
+        const address = accounts[0];
+        loadStatsForAddress(address);
+        connectButton.textContent = 'Connect Wallet';
+
+        try {
+          const provider = new BrowserProvider(window.ethereum);
+          const network = await provider.getNetwork();
+
+          if (Number(network.chainId) !== HARU_CONFIG.chainId) {
+            balanceDisplay.textContent = 'Switch to BNB Chain';
+            return;
+          }
+
+          const token = new Contract(
+            HARU_CONFIG.contractAddress, tokenAbi, provider
+          );
+          const [balance, decimals, symbol] = await Promise.all([
+            token.balanceOf(address),
+            token.decimals(),
+            token.symbol()
+          ]);
+
+          balanceDisplay.textContent =
+            Number(formatUnits(balance, decimals)).toLocaleString(
+              undefined, { maximumFractionDigits: 4 }
+            ) + ' ' + symbol;
+          connectButton.textContent =
+            'Disconnect (' + address.slice(0, 6) + '...)';
+          walletConnected = true;
+        } catch (error) {
+          console.warn('Could not refresh the changed wallet.', error);
+        }
+      });
+    }
+
+    document.getElementById('explore').addEventListener('click', () => {
+      document.getElementById('games').scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+
+
+    const entryAmount = document.getElementById('entry-amount');
+    const entryMessage = document.getElementById('entry-message');
+
+    entryAmount.addEventListener('input', () => {
+      const value = Number(entryAmount.value);
+      if (entryAmount.value.trim() === '' || !Number.isInteger(value) || value < 100 || value > 10000) {
+        entryMessage.textContent = 'Enter a whole number from 100 to 10,000 HARU.';
+      } else {
+        entryMessage.textContent = 'Selected entry: ' + value.toLocaleString() + ' HARU. Demo only; no tokens are transferred.';
+      }
+    });
+
+    const area = document.getElementById('game-area');
+    const title = document.getElementById('game-title');
+    const message = document.getElementById('game-message');
+    const action = document.getElementById('game-action');
+    const rewardPanel = document.getElementById('demo-reward');
+    const rewardText = document.getElementById('demo-reward-text');
+
+    function showDemoReward(won) {
+      rewardPanel.hidden = !won;
+      if (won) {
+        const entry = Number(entryAmount.value);
+        rewardText.textContent =
+          'Hypothetical prize estimate: ' +
+          (entry * 2).toLocaleString() +
+          ' HARU (2× entry of ' + entry.toLocaleString() + ' HARU).';
+      }
+    }
+
+    let statsKey = 'haru-demo-stats-v1:guest';
+    const stats = { played: 0, wins: 0, losses: 0, entries: 0, prizes: 0 };
+
+    function loadStatsForAddress(address) {
+      statsKey = address
+        ? 'haru-demo-stats-v1:' + address.toLowerCase()
+        : 'haru-demo-stats-v1:guest';
+
+      Object.assign(stats, {
+        played: 0, wins: 0, losses: 0, entries: 0, prizes: 0
+      });
+
+      try {
+        const saved = JSON.parse(localStorage.getItem(statsKey) || 'null');
+        if (saved && ['played', 'wins', 'losses', 'entries', 'prizes']
+            .every(key => Number.isFinite(saved[key]) && saved[key] >= 0)) {
+          Object.assign(stats, saved);
+        }
+      } catch (error) {
+        console.warn('Could not load local demo statistics.', error);
+      }
+
+      profileAddress.textContent = address || 'Not connected — Guest profile';
+      refreshStatsDisplay();
+    }
+
+    function refreshStatsDisplay() {
+      document.getElementById('stat-played').textContent = stats.played;
+      document.getElementById('stat-wins').textContent = stats.wins;
+      document.getElementById('stat-losses').textContent = stats.losses;
+      document.getElementById('stat-entries').textContent =
+        stats.entries.toLocaleString() + ' HARU';
+      document.getElementById('stat-prizes').textContent =
+        stats.prizes.toLocaleString() + ' HARU';
+
+      const rate = stats.played
+        ? Math.round(stats.wins / stats.played * 100) + '%'
+        : '0%';
+      document.getElementById('stat-rate').textContent = rate;
+      document.getElementById('profile-played').textContent = stats.played;
+      document.getElementById('profile-wins').textContent = stats.wins;
+      document.getElementById('profile-losses').textContent = stats.losses;
+      document.getElementById('profile-rate').textContent = rate;
+    }
+
+    loadStatsForAddress(null);
+
+    function recordDemoResult(won) {
+      const entry = Number(entryAmount.value);
+      stats.played++;
+      stats.entries += entry;
+      if (won) {
+        stats.wins++;
+        stats.prizes += entry * 2;
+      } else {
+        stats.losses++;
+      }
+
+      document.getElementById('stat-played').textContent = stats.played;
+      document.getElementById('stat-wins').textContent = stats.wins;
+      document.getElementById('stat-losses').textContent = stats.losses;
+      document.getElementById('stat-entries').textContent =
+        stats.entries.toLocaleString() + ' HARU';
+      document.getElementById('stat-prizes').textContent =
+        stats.prizes.toLocaleString() + ' HARU';
+      document.getElementById('stat-rate').textContent =
+        Math.round(stats.wins / stats.played * 100) + '%';
+
+      document.getElementById('profile-played').textContent = stats.played;
+      document.getElementById('profile-wins').textContent = stats.wins;
+      document.getElementById('profile-losses').textContent = stats.losses;
+      document.getElementById('profile-rate').textContent =
+        Math.round(stats.wins / stats.played * 100) + '%';
+
+      try {
+        localStorage.setItem(statsKey, JSON.stringify(stats));
+      } catch (error) {
+        console.warn('Could not save demo statistics.', error);
+      }
+    }
+    let currentGame = '';
+    let sequence = [];
+    let phase = 'idle';
+
+    document.querySelectorAll('[data-game]').forEach(button => {
+      button.addEventListener('click', () => {
+        currentGame = button.dataset.game;
+        showDemoReward(false);
+        area.hidden = false;
+        const selectedEntry = Number(entryAmount.value);
+        title.textContent = (currentGame === 'memory'
+          ? '🧠 Memory Challenge' : '🎯 Target Challenge')
+          + ' — Entry: ' + selectedEntry.toLocaleString() + ' HARU (Demo)';
+        message.textContent = currentGame === 'memory'
+          ? 'Press Start to see five numbers.' : 'Press Start to play.';
+        action.textContent = 'Start';
+        phase = 'idle';
+        document.getElementById('target-controls').hidden = true;
+        area.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    action.addEventListener('click', () => {
+      if (currentGame === 'memory' && phase === 'idle') {
+        sequence = Array.from({ length: 5 },
+          () => Math.floor(Math.random() * 9) + 1);
+        phase = 'showing';
+        message.replaceChildren();
+        message.append('Memorize these numbers: ' + sequence.join('  '));
+        action.textContent = 'Wait...';
+        action.disabled = true;
+
+        setTimeout(() => {
+          if (area.hidden || currentGame !== 'memory') return;
+          message.textContent =
+            'Enter the five numbers in order, separated by spaces:';
+          const answer = document.createElement('input');
+          answer.id = 'memory-answer';
+          answer.placeholder = 'e.g. 1 5 3 8 2';
+          answer.inputMode = 'numeric';
+          answer.style.cssText =
+            'display:block;width:100%;padding:12px;margin:12px 0;border-radius:8px';
+          message.appendChild(answer);
+          phase = 'answer';
+          action.disabled = false;
+          action.textContent = 'Check Answer';
+          answer.focus();
+        }, 4000);
+      } else if (currentGame === 'memory' && phase === 'answer') {
+        const answer = document.getElementById('memory-answer');
+        const entered = answer ? answer.value.replace(/\D/g, '') : '';
+        const won = entered === sequence.join('');
+        message.textContent = won
+          ? 'Correct! Demo challenge completed.'
+          : 'Not quite. Press Play Again to retry.';
+        showDemoReward(won);
+        recordDemoResult(won);
+        phase = 'done';
+        action.textContent = 'Play Again';
+      } else if (currentGame === 'memory') {
+        phase = 'idle';
+        action.disabled = false;
+        message.textContent = 'Press Start to see five numbers.';
+        action.textContent = 'Start';
+      } else if (currentGame === 'target' && phase !== 'target-ready') {
+        sequence = [Math.floor(Math.random() * 5) + 1];
+        phase = 'target-ready';
+        document.getElementById('target-controls').hidden = false;
+        document.getElementById('target-answer').value = '';
+        message.textContent = 'Enter your guess below.';
+        action.textContent = 'Guess';
+      } else if (currentGame === 'target' && phase === 'target-ready') {
+        const field = document.getElementById('target-answer');
+        const value = field.value.trim();
+        if (!value || !Number.isInteger(Number(value)) ||
+            Number(value) < 1 || Number(value) > 5) {
+          message.textContent = 'Enter a whole number from 1 to 5.';
+          field.focus();
+        } else {
+          const target = sequence[0];
+          const won = Number(value) === target;
+          message.textContent = won
+            ? 'You hit the target! Demo complete.'
+            : 'Not quite! The number was ' + target + '. Press Play Again.';
+          showDemoReward(won);
+          recordDemoResult(won);
+          phase = 'done';
+          document.getElementById('target-controls').hidden = true;
+          action.textContent = 'Play Again';
+        }
+      }
+    });
+
+    document.getElementById('close-game').addEventListener('click', () => {
+      area.hidden = true;
+      currentGame = '';
+    });
+  </script>
+</body>
+</html>
