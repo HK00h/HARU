@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101528">
+  <title>HARU Gaming</title>
+  <style>*{box-sizing:border-box}body{color:#fff;background:#101528;margin:0;font-family:Arial,sans-serif}header{background:#191f38;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:20px;display:flex}.logo{color:#63f5c5;font-size:25px;font-weight:800}button{color:#101528;cursor:pointer;background:#63f5c5;border:0;border-radius:10px;padding:12px 16px;font-weight:700}main{max-width:900px;margin:auto;padding:22px}.hero{background:linear-gradient(135deg,#263c64,#44266b);border-radius:20px;margin-bottom:22px;padding:28px 20px}h1{margin:0 0 12px;font-size:32px}p{color:#c5cbe0;line-height:1.6}.balances,.games{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:20px 0;display:grid}.card{background:#1b223b;border:1px solid #303a59;border-radius:16px;padding:20px}.amount{margin-top:10px;font-size:23px;font-weight:700}.game-icon{font-size:36px}.muted{color:#aeb8d3;font-size:13px}.notice{border:1px solid #596080;border-radius:12px;margin-top:20px;padding:15px}footer{text-align:center;color:#aeb8d3;padding:25px}@media (width<=480px){.balances,.games{grid-template-columns:1fr}h1{font-size:27px}}</style>
+  <script type="module" crossorigin src="./assets/game-Cdhr7nfn.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-C_s2cVnS.js">
+  <link rel="modulepreload" crossorigin href="./assets/haru-config-fGAZ6XL6.js">
+</head>
+<body>
+  <header>
+    <div class="logo">HARU GAMING</div>
+    <button id="connect">Connect Wallet</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Play. Compete. Win.</h1>
+      <p>Welcome to the HARU gaming hub on BNB Smart Chain.</p>
+      <button id="explore">Explore Games</button>
+    </section>
+
+    <h2>Your Wallet</h2>
+    <section class="balances">
+      <div class="card">
+        <div>HARU Balance</div>
+        <div class="amount" id="haru">— HARU</div>
+        <p class="muted">Connect your wallet to check your on-chain balance.</p>
+      </div>
+      <div class="card">
+        <div>USDT Rewards</div>
+        <div class="amount">Not available yet</div>
+        <p class="muted">Rewards will require funded payouts and verification.</p>
+      </div>
+    </section>
+
+    <section class="card" id="player-profile">
+      <h2>Player Profile</h2>
+      <p>Wallet address:</p>
+      <p id="profile-address" style="overflow-wrap:anywhere;">Not connected</p>
+      <p>Games played: <strong id="profile-played">0</strong></p>
+      <p>Wins: <strong id="profile-wins">0</strong></p>
+      <p>Losses: <strong id="profile-losses">0</strong></p>
+      <p>Demo win rate: <strong id="profile-rate">0%</strong></p>
+      <p>Local-only demo profile — saved in this browser on this device. Not server-verified. No real prizes or token transfers.</p>
+    </section>
+
+    <section class="card" id="entry-settings">
+      <h2>Game Entry Amount</h2>
+      <p>Choose how much HARU you want to enter with.</p>
+      <label for="entry-amount">HARU amount (100–10,000)</label>
+      <input id="entry-amount" type="number" min="100" max="10000"
+        step="1" value="100" inputmode="numeric"
+        style="display:block;width:100%;padding:12px;margin:10px 0;box-sizing:border-box;">
+      <p id="entry-message" role="status">Demo selection only — no tokens are transferred.</p>
+    </section>
+
+    <h2>Game Lobby</h2>
+    <section class="games" id="games">
+      <div class="card">
+        <div class="game-icon">🧠</div>
+        <h3>Memory Challenge</h3>
+        <p>Remember the number sequence and test your concentration.</p>
+        <p><strong>Entry:</strong> Uses your selected demo amount.</p>
+        <p><strong>Mode:</strong> Practice only; no real tokens are wagered.</p>
+        <button data-game="memory">Play Memory Demo</button>
+      </div>
+      <div class="card">
+        <div class="game-icon">🎯</div>
+        <h3>Target Challenge</h3>
+        <p>Test your timing and aim in a quick target challenge.</p>
+        <p><strong>Entry:</strong> Uses your selected demo amount.</p>
+        <p><strong>Mode:</strong> Practice only; no real tokens are wagered.</p>
+        <button data-game="target">Play Target Demo</button>
+      </div>
+    </section>
+
+    <section class="card" id="game-area" hidden>
+      <h2 id="game-title">Game</h2>
+      <p id="game-message"></p>
+      <div id="demo-reward" class="notice" hidden
+           style="margin:12px 0;padding:12px;">
+        <strong>Demo Rewards</strong>
+        <p id="demo-reward-text"></p>
+        <p>Illustration only. No real prize is earned or paid.</p>
+      </div>
+      <div id="target-controls" hidden style="margin:12px 0;">
+        <label for="target-answer">Pick a number from 1 to 5</label>
+        <input id="target-answer" type="number" min="1" max="5"
+          inputmode="numeric" placeholder="Enter 1–5"
+          style="display:block;width:100%;padding:12px;margin:10px 0;box-sizing:border-box;">
+      </div>
+      <button id="game-action">Start</button>
+      <button id="close-game">Close</button>
+    </section>
+
+    <section class="card" id="game-stats">
+      <h2>Game Results &amp; Statistics</h2>
+      <p>Demo statistics only — no real tokens or prizes.</p>
+      <p>Games played: <strong id="stat-played">0</strong></p>
+      <p>Wins: <strong id="stat-wins">0</strong></p>
+      <p>Losses: <strong id="stat-losses">0</strong></p>
+      <p>Total demo entries: <strong id="stat-entries">0 HARU</strong></p>
+      <p>Hypothetical prizes: <strong id="stat-prizes">0 HARU</strong></p>
+      <p>Demo win rate: <strong id="stat-rate">0%</strong></p>
+    </section>
+
+    <section class="notice">
+      <strong>Demo mode</strong>
+      <p>Games currently use no deposits, wagers, or real-money payouts.
+      Never send tokens to an unverified address. USDT rewards are not
+      active until a secure payout system is implemented.</p>
+    </section>
+  </main>
+
+  <footer>HARU Gaming · BNB Smart Chain · Demo version</footer>
+
+</body>
+</html>
