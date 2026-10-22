@@ -29,8 +29,16 @@
     }
 
     .logo {
-      font-size: 24px;
-      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      display: block;
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      border-radius: 10px;
     }
 
     .status {
@@ -101,7 +109,7 @@
 
 <header>
   <div>
-    <div class="logo">HARU</div>
+    <div class="logo"><img src="/haru-logo.png" alt="HARU logo"></div>
     <div class="status">Web3 Dashboard</div>
   </div>
 
